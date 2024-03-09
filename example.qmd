@@ -1,0 +1,9 @@
+---
+title: "Optimize-images Example"
+filters:
+  - optimize-images
+---
+
+## Heading
+
+This filter adds formatting to heading text.
