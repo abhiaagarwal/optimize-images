@@ -67,10 +67,12 @@ function Image(el)
         local imageData = extractKeyValuePairs(pandoc.pipe("vipsheader", { "-a", imageSrc }, ""))
         local height = tonumber(imageData["height"])
         if height == nil then
+            quarto.log.error("Could not parse height of image")
             return nil
         end
         local width = tonumber(imageData["width"])
         if width == nil then
+            quarto.log.error("Could not parse width of image")
             return nil
         end
         local loader = imageData["loader"]
@@ -94,7 +96,6 @@ function Image(el)
             end
         end
         if first == nil then
-            -- this should definitely not happen! please report a bug.
             quarto.log.error("this shouldn't have happened. please file a bug.")
             return nil
         end
@@ -111,17 +112,16 @@ function Image(el)
         --quarto.log.output(vipsFile)
         el.src = first
         el.attr.attributes["srcset"] = preloadString
-        -- el.attr.attributes["loading"] = "lazy"
-        -- el.attr.attributes["width"] = tostring(width)
-        -- el.attr.attributes["height"] = tostring(height)
         el.attributes.style = string.format("aspect-ratio: %d / %d", width, height)
-        quarto.log.output(el)
+
+        el.attr.attributes["decoding"] = "async"
 
         local version = quarto.version
         if version[1] == 1 and version[2] < 4 then
-            quarto.log.error([[
+            quarto.log.warning([[
                 You are on a Quarto <1.4. As a result, all the generated webp files won't be added to your output. 
-                You can work around this by adding a 'resources: -"*.webp" to your project metadata.
+                You can work around this by adding a 'resources: -"*.webp"' to your project metadata. 
+                This also means the generated files will remain unmoved.
             ]])
         else
             for _, value in pairs(generatedImages) do

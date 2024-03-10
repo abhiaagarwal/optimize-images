@@ -1,5 +1,5 @@
 ---
-title: "optimize-images Example"
+title: "optimize-images examples"
 format:
   html:
     toc: true
@@ -13,6 +13,10 @@ This image is 2.1MB uncompressed, and it is 4032 x 3024, and a jpg. This may
 
 ![](images/norman-tsui-AB8Vn19fgaE-unsplash.jpg){fig-alt="An image" .nooptimize}
 
+If you want to see how it *could* feel crappy, open your browser's DevTools and click on the "Network" tab. Click "disable cache" and then reload the page. On my machine, this image takes 87ms to load — the optimized image below takes 12ms. While this may not seem much in practice, I'm running these benchamrks on my local machine so it's the optimal speed for transfering data.
+
+Now, click "no throttling" and then select "Fast 3G", which is arguably the speed at which most of the world operates at^[It's about 1/3 from my understanding]. For me, this takes **15.48s** to download, of which **14.90s** of that is actually downloading the image. This is only **5.29s** for the optimized image and **3.82s** of download time. 
+
 ## A large, compressed image
 
 The image above has been automatically compressed to 1200x1600, in the optimized [webp format](https://web.dev/articles/serve-images-webp), down to 233KB. That is a 10x decrease in size for a 4x reduction in pixels, approximately. It has also generated images in widths of 800 and 400, which will be requested by the browser if on a sufficiently small device.
@@ -22,14 +26,18 @@ The image above has been automatically compressed to 1200x1600, in the optimized
 The generated HTML looks like this:
 
 ```{.html .code-overflow-wrap}
-<img src="images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp" class="img-fluid" srcset="images/norman-tsui-AB8Vn19fgaE-unsplash-1600w.webp 1600w, images/norman-tsui-AB8Vn19fgaE-unsplash-800w.webp 800w, images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp 400w">
+<img src="images/norman-tsui-AB8Vn19fgaE-unsplash-1600w.webp" class="img-fluid" style="aspect-ratio: 4032 / 3024" srcset="images/norman-tsui-AB8Vn19fgaE-unsplash-1600w.webp 1600w, images/norman-tsui-AB8Vn19fgaE-unsplash-800w.webp 800w, images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp 400w" decoding="async" alt="An image">
 ```
 
-In addition, it has been preloaded in the `<head>` element as per [best practices](https://web.dev/articles/preload-responsive-images).
+In addition to the generated files, it also adds a few extra pieces of metadata. We specify the `aspect-ratio` so the browser is capable of pre-calculating the amount of space the image needs before it loads it. We specify `decoding="async"` so the browser can asynchronously load the image, rather than blocking.
+
+We also add some metadata in the `<head>` specifying the image preloads as per [best practices](https://web.dev/articles/preload-responsive-images).
 
 ```{.html .code-overflow-wrap}
 <link rel="preload" as="image" href="images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp" imagesrcset="images/norman-tsui-AB8Vn19fgaE-unsplash-1600w.webp 1600w, images/norman-tsui-AB8Vn19fgaE-unsplash-800w.webp 800w, images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp 400w">
 ```
+
+While this does theoretically increase HTML bloat, modern browsers are obviously very optimized at reading HMTL extremely fast. Indeed, since we move the image preloading to the `<head>`, browsers read HTML sequentially so it becomes aware of the image far before it would through walking the `<body>`.
 
 # Appendix: why is optimizing images important?
 
