@@ -45,8 +45,7 @@ jobs:
 
       - name: Render example
         run: |
-          quarto render example.qmd
-          mkdir _site
+          quarto render
           mv _site/examples.html _site/index.html
 
       - name: Upload artifact
