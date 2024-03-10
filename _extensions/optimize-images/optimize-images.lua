@@ -121,10 +121,9 @@ function Image(el)
             ]])
         else
             for _, value in pairs(generatedImages) do
-                quarto.doc.add_resource(value)
+                quarto.doc.add_resource(pandoc.path.join({quarto.project.directory, value }))
             end
         end       
-    
         return el
     end
 end
