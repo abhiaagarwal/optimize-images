@@ -47,7 +47,7 @@ jobs:
         run: |
           quarto render example.qmd
           mkdir _site
-          mv example.html _site/index.html
+          mv _site/examples.html _site/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

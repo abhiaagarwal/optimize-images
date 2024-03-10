@@ -5,6 +5,8 @@ format:
     toc: true
 filters:
   - optimize-images
+resources:
+  - "*.webp" # HACK: FIGURE OUT A WAY AROUND THIS
 ---
 
 ## A large, uncompressed image
