@@ -111,7 +111,11 @@ function Image(el)
         --quarto.log.output(vipsFile)
         el.src = first
         el.attr.attributes["srcset"] = preloadString
-        quarto.log.debug(el)
+        -- el.attr.attributes["loading"] = "lazy"
+        -- el.attr.attributes["width"] = tostring(width)
+        -- el.attr.attributes["height"] = tostring(height)
+        el.attributes.style = string.format("aspect-ratio: %d / %d", width, height)
+        quarto.log.output(el)
 
         local version = quarto.version
         if version[1] == 1 and version[2] < 4 then
