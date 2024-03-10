@@ -46,7 +46,7 @@ jobs:
       - name: Render example
         run: |
           quarto render
-          mv _site/examples.html _site/index.html
+          mv _site/example.html _site/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
