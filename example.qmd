@@ -1,9 +1,38 @@
 ---
-title: "Optimize-images Example"
+title: "optimize-images Example"
+format:
+  html:
+    toc: true
 filters:
   - optimize-images
 ---
 
-## Heading
+## A large, uncompressed image
 
-This filter adds formatting to heading text.
+This image is 2.1MB uncompressed, and it is 4032 x 3024, and a jpg. This may take a second to load, and it should feel kinda crappy to your browser.
+
+![](images/norman-tsui-AB8Vn19fgaE-unsplash.jpg){fig-alt="An image" .nooptimize}
+
+## A large, compressed image
+
+The image above has been automatically compressed to 1200x1600, in the optimized [webp format](https://web.dev/articles/serve-images-webp), down to 233KB. That is a 10x decrease in size for a 4x reduction in pixels, approximately. It has also generated images in widths of 800 and 400, which will be requested by the browser if on a sufficiently small device.
+
+![](images/norman-tsui-AB8Vn19fgaE-unsplash.jpg){fig-alt="An image"}
+
+The generated HTML looks like this:
+
+```{.html .code-overflow-wrap}
+<img src="images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp" class="img-fluid" srcset="images/norman-tsui-AB8Vn19fgaE-unsplash-1600w.webp 1600w, images/norman-tsui-AB8Vn19fgaE-unsplash-800w.webp 800w, images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp 400w">
+```
+
+In addition, it has been preloaded in the `<head>` element as per [best practices](https://web.dev/articles/preload-responsive-images).
+
+```{.html .code-overflow-wrap}
+<link rel="preload" as="image" href="images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp" imagesrcset="images/norman-tsui-AB8Vn19fgaE-unsplash-1600w.webp 1600w, images/norman-tsui-AB8Vn19fgaE-unsplash-800w.webp 800w, images/norman-tsui-AB8Vn19fgaE-unsplash-400w.webp 400w">
+```
+
+# Appendix: why is optimizing images important?
+
+Optimizing images is probably the thing you most need to do on *any* website. Images are binary content that can't necessarily be optimized away, as it is vital to the content of your website. 
+
+Additionally, from the perspective of SEO, Google and other search engines heavily dock websites that aren't well-optimized. By failing to not optimize, you're destroying discoverably for your own content. And indeed, to people in the world that may have worse internet connections than you, they're likely going to just avoid reading your content if it takes too long for it to load in their browser.
