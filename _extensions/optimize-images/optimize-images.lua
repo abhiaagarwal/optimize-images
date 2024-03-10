@@ -58,7 +58,7 @@ function Image(el)
         if el.attr.classes then
             for _, value in pairs(el.attr.classes) do
                 if value == "nooptimize" then
-                    quarto.log.output("skipping image")
+                    quarto.log.debug("skipping image")
                     return nil
                 end
             end
@@ -111,8 +111,20 @@ function Image(el)
         --quarto.log.output(vipsFile)
         el.src = first
         el.attr.attributes["srcset"] = preloadString
-        quarto.log.output(el)
+        quarto.log.debug(el)
 
+        local version = quarto.version
+        if version[1] == 1 and version[2] < 4 then
+            quarto.log.error([[
+                You are on a Quarto <1.4. As a result, all the generated webp files won't be added to your output. 
+                You can work around this by adding a 'resources: -"*.webp" to your project metadata.
+            ]])
+        else
+            for _, value in pairs(generatedImages) do
+                quarto.doc.add_resource(value)
+            end
+        end       
+    
         return el
     end
 end
