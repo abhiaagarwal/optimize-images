@@ -39,6 +39,24 @@ We also add some metadata in the `<head>` specifying the image preloads as per [
 
 While this does theoretically increase HTML bloat, modern browsers are obviously very optimized at reading HMTL extremely fast. Indeed, since we move the image preloading to the `<head>`, browsers read HTML sequentially so it becomes aware of the image far before it would through walking the `<body>`.
 
+# Images don't get upscaled.
+
+Here's an image that's 1200x1200. We've defined our thresholds as 1600, 800, 400, so we don't want to upscale it.
+
+![](images/photo-1708356948226-259cf75514a2.jpeg){fig-alt="An image" .nooptimize}
+
+The optimized image generates sizes of 1200, 800, 400. It generates the "highest" optimized width possible and everything that's smaller.
+
+![](images/photo-1708356948226-259cf75514a2.jpeg){fig-alt="An image"}
+
+This also applies to even smaller images. Here's an image of size 600x600 — it wouldn't make sense to generate an 800x800 image for this. This filter handles this edge-case, and generates a 600x600 webp and a 400x400 webp.
+
+![](images/photo-1708133262821-aa46a26ab2e8.jpeg){fig-alt="An image"}
+
+Finally, here's a small image at 300x300 — the filter only generates an optimized webp, and doesn't perform any downscaling.
+
+![](images/photo-1709983966012-d029ecc43684.jpeg){fig-alt="An image"}
+
 # Appendix: why is optimizing images important?
 
 Optimizing images is probably the thing you most need to do on *any* website. Images are binary content that can't necessarily be optimized away, as it is vital to the content of your website. 

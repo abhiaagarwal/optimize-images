@@ -98,6 +98,7 @@ function Image(el)
             quarto.log.error("Could not parse width of image")
             return nil
         end
+        quarto.log.debug("Parsed height and width " .. height .. " " .. width)
 
         local first = nil
         local generatedImages = {}
@@ -105,7 +106,7 @@ function Image(el)
         local fmt_string = "%s-%dw.webp"
         for _, value in ipairs(imgSizes) do
             local new_filename = nil
-            if width > value then
+            if value < width then
                 new_filename = string.format(fmt_string, filename, value)
                 generatedImages[value] = new_filename
             elseif first == nil then
