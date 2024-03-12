@@ -76,7 +76,7 @@ function Image(el)
         end
 
         local imageSrc = el.src
-        local file = io.open(imageSrc, "rb")
+        local file = io.open(imageSrc, "r")
         if not file then
             quarto.log.error("Could not find image file " .. imageSrc)
             return nil
@@ -128,7 +128,7 @@ function Image(el)
                 { "thumbnail_source", "[descriptor=0]", ".webp", width, "--export-profile=srgb" },
                 fileContent
             )
-            local handle = io.open(filename, "wb")
+            local handle = io.open(filename, "w")
             if handle == nil then
                 quarto.log.error("Could not open file " .. filename)
                 return nil
