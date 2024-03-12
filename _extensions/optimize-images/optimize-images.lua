@@ -60,10 +60,12 @@ end
 function Image(el)
     -- this doesn't need any js; but there isn't a point with using this with epubs
     if quarto.doc.is_format("html:js") then
+        local imageSrc = el.src
+        quarto.log.debug("Processing image with path " .. imageSrc)
         if el.attr.classes then
             for _, value in pairs(el.attr.classes) do
                 if value == "nooptimize" then
-                    quarto.log.debug("skipping image")
+                    quarto.log.debug("Skipping image")
                     return nil
                 end
             end
@@ -75,15 +77,15 @@ function Image(el)
             return nil
         end
 
-        local imageSrc = el.src
-        local file = io.open(imageSrc, "r")
-        if not file then
+        local file = io.open(imageSrc, "rb")
+        if file == nil then
             quarto.log.error("Could not find image file " .. imageSrc)
             return nil
         end
 
         local fileContent = file:read("*all")
         file:close()
+        quarto.log.debug("Loaded file")
 
         local imageData = extractKeyValuePairs(pandoc.pipe("vipsheader", { "-a", "stdin" }, fileContent))
         local height = tonumber(imageData["height"])
@@ -128,7 +130,7 @@ function Image(el)
                 { "thumbnail_source", "[descriptor=0]", ".webp", width, "--export-profile=srgb" },
                 fileContent
             )
-            local handle = io.open(filename, "w")
+            local handle = io.open(filename, "w+b")
             if handle == nil then
                 quarto.log.error("Could not open file " .. filename)
                 return nil

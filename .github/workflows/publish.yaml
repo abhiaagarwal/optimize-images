@@ -45,7 +45,7 @@ jobs:
 
       - name: Render example
         run: |
-          quarto render
+          quarto render --trace
           mv _site/example.html _site/index.html
 
       - name: Upload artifact
