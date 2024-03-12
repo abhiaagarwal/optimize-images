@@ -87,7 +87,7 @@ function Image(el)
         file:close()
         quarto.log.debug("Loaded file")
 
-        local imageData = extractKeyValuePairs(pandoc.pipe("vipsheader", { "-a", "stdin" }, fileContent))
+        local imageData = extractKeyValuePairs(pandoc.pipe("vipsheader", { "-a", imageSrc }, ""))
         local height = tonumber(imageData["height"])
         if height == nil then
             quarto.log.error("Could not parse height of image")
