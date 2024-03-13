@@ -56,7 +56,6 @@ local function checkIfCommandExists(command)
     return checked ~= nil
 end
 
--- Generate image
 function Image(el)
     -- this doesn't need any js; but there isn't a point with using this with epubs
     if quarto.doc.is_format("html:js") then
@@ -128,7 +127,7 @@ function Image(el)
         for width, filename in pairs(generatedImages) do
             local generatedContent = pandoc.pipe(
                 "vips",
-                { "thumbnail_source", "[descriptor=0]", ".webp", width, "--export-profile=srgb" },
+                { "thumbnail_source", "[descriptor=0]", ".webp[keep=none]", width, "--export-profile=srgb" },
                 fileContent
             )
             local handle = io.open(filename, "w+b")
