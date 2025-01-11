@@ -52,8 +52,14 @@ local function generatePreloads(input)
 end
 
 local function checkIfCommandExists(command)
-    local checked = os.execute("command -v " .. command .. " &> /dev/null")
-    return checked ~= nil
+    local os_name = pandoc.system.os
+    if os_name == "mingw32" then
+        local checked = os.execute("where " .. command .. " >nul 2>&1")
+        return checked ~= nil
+    else
+        local checked = os.execute("command -v " .. command .. " >/dev/null 2>&1")
+        return checked ~= nil
+    end
 end
 
 -- Generate image
@@ -87,7 +93,7 @@ function Image(el)
         file:close()
         quarto.log.debug("Loaded file")
 
-        local imageData = extractKeyValuePairs(pandoc.pipe("vipsheader", { "-a", imageSrc }, ""))
+        local imageData = extractKeyValuePairs(pandoc.pipe("vipsheader", { "-a", "stdin" }, fileContent))
         local height = tonumber(imageData["height"])
         if height == nil then
             quarto.log.error("Could not parse height of image")
