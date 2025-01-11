@@ -53,7 +53,7 @@ end
 
 local function checkIfCommandExists(command)
     local os_name = pandoc.system.os
-    if os_name == "windows" then
+    if os_name == "mingw32" then
         local checked = os.execute("where " .. command .. " >nul 2>&1")
         return checked ~= nil
     else
